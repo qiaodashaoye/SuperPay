@@ -126,12 +126,3 @@ https://doc.open.alipay.com/docs/doc.htm?spm=a219a.7629140.0.0.sdGXaH&treeId=204
     详情请参考支付宝支付的密钥处理体系文档。
 
     https://doc.open.alipay.com/docs/doc.htm?spm=a219a.7629140.0.0.1wPnBT&treeId=204&articleId=106079&docType=1
-
-## 打赏
-如果你觉得此项目对你有用，能否赏我一杯咖啡呢？
-
-### 微信支付
-![](http://img.blog.csdn.net/20170302140650271)
-### 支付宝支付
-![支付宝支付](http://img.blog.csdn.net/20170302140734345)
-
