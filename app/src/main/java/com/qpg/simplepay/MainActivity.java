@@ -9,6 +9,8 @@ import com.qpg.paylib.AliPayAPI;
 import com.qpg.paylib.AliPayReq;
 import com.qpg.paylib.PayAPI;
 import com.qpg.paylib.PayConstants;
+import com.qpg.paylib.WechatPayReq;
+import com.qpg.paylib.wxutils.WXPayUtils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,8 +38,8 @@ public class MainActivity extends AppCompatActivity {
                         .apply(config)// the above custome config
                         .setOutTradeNo("no12335357745")//set unique trade no
                         .setPrice("0.01")//set price
-                        .setSubject("蛋")//set order subject
-                        .setBody("鸡蛋")//set order detail
+                        .setSubject("测试")//set order subject
+                        .setBody("测试")//set order detail
                         .setCallbackUrl("www.baidu.com")//set callback for pay reqest
                         .create()//
                         .setOnAliPayListener(null);//
@@ -46,5 +48,31 @@ public class MainActivity extends AppCompatActivity {
                 PayAPI.getInstance().sendPayRequest(aliPayReq);
             }
         });
+
+        PayWeChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new WXPayUtils().init(MainActivity.this)
+                        .setListener(new WXPayUtils.BackResult() {
+                            @Override
+                            public void getInfo(String prepayId, String sign) {
+                                WechatPayReq wechatPayReq = new WechatPayReq.Builder()
+                                        .with(MainActivity.this) //activity instance
+                                        .setAppId(PayConstants.WXPay_APPID) //wechat pay AppID
+                                        .setPartnerId(PayConstants.WXPay_mch_id)//wechat pay partner id
+                                        .setPrepayId(prepayId)//pre pay id
+                                        .setNonceStr("")
+                                        .setTimeStamp("")//time stamp
+                                        .setSign(sign)//sign
+                                        .create();
+                                //2. send the request with wechat pay
+                                PayAPI.getInstance().sendPayRequest(wechatPayReq);
+                            }
+                        });
+
+            }
+        });
     }
+
+
 }

@@ -13,6 +13,12 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -27,7 +33,10 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:25.3.1'
+    // compile 'org.apache.httpcomponents.client5:httpclient5:5.0-alpha2'
     compile 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
     testCompile 'junit:junit:4.12'
     compile files('libs/alipaySingle-20170510.jar')
+    compile files('libs/httpcore-4.4.6.jar')
+    compile files('libs/httpclient-4.5.3.jar')
 }

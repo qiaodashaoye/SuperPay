@@ -1,9 +1,11 @@
 # SimplePay
-支持微信和支付宝两种主流支付的集成库， 两行代码实现微信支付， 三行代码实现支付宝支付
-
+集成微信和支付宝支付，微信支付遇到的坑，我来帮你填，App内嵌支付如此简单。
+此项目借鉴compile 'io.github.mayubao:pay_library:1.0.1'。
 ## 使用
 
-### 微信支付使用
+### 微信支付使用（两种方案）
+
+##方案一：统一下单接口的调取在服务端（推荐）
 
 ```java
         //1.创建微信支付请求
@@ -25,6 +27,27 @@
         //wechatPayReq.setOnWechatPayListener(new OnWechatPayListener);
 
 
+```
+
+##方案二：统一下单接口的调取在移动端
+```java
+ new WXPayUtils().init(MainActivity.this)
+                        .setListener(new WXPayUtils.BackResult() {
+                            @Override
+                            public void getInfo(String prepayId, String sign) {
+                                WechatPayReq wechatPayReq = new WechatPayReq.Builder()
+                                        .with(MainActivity.this) //activity instance
+                                        .setAppId(PayConstants.WXPay_APPID) //wechat pay AppID
+                                        .setPartnerId(PayConstants.WXPay_mch_id)//wechat pay partner id
+                                        .setPrepayId(prepayId)//pre pay id
+                                        .setNonceStr("")
+                                        .setTimeStamp("")//time stamp
+                                        .setSign(sign)//sign
+                                        .create();
+                                //2. send the request with wechat pay
+                                PayAPI.getInstance().sendPayRequest(wechatPayReq);
+                            }
+                        });
 ```
 
 

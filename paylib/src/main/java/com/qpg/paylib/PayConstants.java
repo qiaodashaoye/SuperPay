@@ -11,8 +11,11 @@ public class PayConstants {
     public static final String Seller="";
     //支付宝秘钥
     public static final String PRIVATEKEY="";
+
+    //微信参数
     public static final String WXPay_APPID="";
     public static final String WXPay_mch_id="";
     public static final String WXPay_key="";
+
 
 }

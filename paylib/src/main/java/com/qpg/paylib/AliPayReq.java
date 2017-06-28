@@ -114,7 +114,11 @@ public class AliPayReq {
 		String sign = sign(orderInfo);
 		try {
 			// 仅需对sign 做URL编码
-			sign = URLEncoder.encode(sign, "UTF-8");
+			if(sign!=null){
+				sign = URLEncoder.encode(sign, "UTF-8");
+			}else {
+				Toast.makeText(mActivity,"签名失败",Toast.LENGTH_SHORT).show();
+			}
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
