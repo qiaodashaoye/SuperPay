@@ -1,6 +1,5 @@
 # SimplePay
 集成微信和支付宝支付，微信支付遇到的坑，我来帮你填，App内嵌支付如此简单。
-此项目借鉴compile 'io.github.mayubao:pay_library:1.0.1'。
 ## 使用
 
 ### 微信支付使用（两种方案）
