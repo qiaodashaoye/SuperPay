@@ -1,4 +1,7 @@
 # SimplePay
+
+[![](https://jitpack.io/v/qiaodashaoye/SimplePay.svg)](https://jitpack.io/#qiaodashaoye/SimplePay)
+
 集成微信和支付宝支付，微信支付遇到的坑，我来帮你填，App内嵌支付如此简单。
 ## 使用
 
