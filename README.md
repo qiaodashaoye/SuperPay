@@ -1,11 +1,20 @@
 # SimplePay
 
 [![](https://jitpack.io/v/qiaodashaoye/SimplePay.svg)](https://jitpack.io/#qiaodashaoye/SimplePay)
-[![作者\](https:\//img.shields.io\/badge\/%E4%BD%9C%E8%80%85-gdky005-7AD6FD.svg)\](http:\//www.gdky005.com)
 
 集成微信和支付宝支付，微信支付遇到的坑，我来帮你填，App内嵌支付如此简单。
-## 使用
+# 一、集成步骤
+ ```java
+  allprojects {
+  		repositories {
+  			...
+  			maven { url 'https://jitpack.io' }
+  		}
+  	}	
+```
+> compile 'com.github.qiaodashaoye:SimplePay:1.0.1'
 
+# 二、使用
 ### 微信支付使用（两种方案）
 
 ##方案一：统一下单接口的调取在服务端（推荐）
@@ -155,7 +164,6 @@ https://doc.open.alipay.com/docs/doc.htm?spm=a219a.7629140.0.0.sdGXaH&treeId=204
  - 微信支付API没有在客户端显示的设置回调，回调是在Server端设置的。(与支付宝支付的区别，支付宝的回调是在客户端设置的)
 
 ### 支付宝支付
-
  - 支付宝支付为了保证交易双方的身份和数据安全， 需要配置双方密钥。
     详情请参考支付宝支付的密钥处理体系文档。
     https://doc.open.alipay.com/docs/doc.htm?spm=a219a.7629140.0.0.1wPnBT&treeId=204&articleId=106079&docType=1
