@@ -12,6 +12,8 @@ import com.qpg.paylib.PayConstants;
 import com.qpg.paylib.WechatPayReq;
 import com.qpg.paylib.wxutils.WXPayUtils;
 
+import java.util.HashMap;
+
 public class MainActivity extends AppCompatActivity {
 
     private TextView payAli,PayWeChat;
@@ -26,10 +28,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // step 1 create config for ali pay
                 AliPayAPI.Config config = new AliPayAPI.Config.Builder()
-                        .setRsaPrivate(PayConstants.PRIVATEKEY) // rsa private key from partner (pkcs8 format)
-                        .setRsaPublic(PayConstants.PRIVATEKEY)//ali rsa public key
-                        .setPartner(PayConstants.Partner) //set partner
-                        .setSeller(PayConstants.Seller) //set partner seller accout
+                        .setRsaPrivate(PayConstants.RSA_PRIVATE) // 商户私钥，pkcs8格式
+                        .setRsaPublic(PayConstants.RSA_PUBLIC)//支付宝公钥
+                        .setPartner(PayConstants.PARTNER) //商户PID
+                        .setSeller(PayConstants.SELLER) //商户收款账号
                         .create();
 
                 //step 2 create reqeust for ali
@@ -52,14 +54,23 @@ public class MainActivity extends AppCompatActivity {
         PayWeChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new WXPayUtils().init(MainActivity.this)
+
+                HashMap<String,Object> map=new HashMap<String, Object>();
+                map.put("WXPay_APPID","123131231");
+                map.put("WXPay_mch_id","123131231");
+                map.put("orderNo","123131231");
+                map.put("orderMoney",1);
+                map.put("notify_url","www.baidu.com");
+                map.put("body","商品描述");
+
+                new WXPayUtils().init(MainActivity.this,map)
                         .setListener(new WXPayUtils.BackResult() {
                             @Override
                             public void getInfo(String prepayId, String sign) {
                                 WechatPayReq wechatPayReq = new WechatPayReq.Builder()
                                         .with(MainActivity.this) //activity instance
-                                        .setAppId(PayConstants.WXPay_APPID) //wechat pay AppID
-                                        .setPartnerId(PayConstants.WXPay_mch_id)//wechat pay partner id
+                                        .setAppId(PayConstants.APP_ID) //wechat pay AppID
+                                        .setPartnerId(PayConstants.MCH_ID)//wechat pay partner id
                                         .setPrepayId(prepayId)//pre pay id
                                         .setNonceStr("")
                                         .setTimeStamp("")//time stamp

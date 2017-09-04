@@ -5,17 +5,25 @@ package com.qpg.paylib;
  */
 
 public class PayConstants {
-    //支付宝账号ID
-    public static final String Partner="";
-    //支付宝账号
-    public static final String Seller="";
-    //支付宝秘钥
-    public static final String PRIVATEKEY="";
+    // 商户PID
+    public static final String PARTNER = "";
+    // 商户收款账号
+    public static final String SELLER = "";
+    // 商户私钥，pkcs8格式
+    public static final String RSA_PRIVATE = "";
+    // 支付宝公钥
+    public static final String RSA_PUBLIC = "";
 
-    //微信参数
-    public static final String WXPay_APPID="";
-    public static final String WXPay_mch_id="";
-    public static final String WXPay_key="";
+
+
+    // APP_ID 替换为你的应用从官方网站申请到的合法appId
+    public static final String APP_ID = "";
+
+    //  API密钥，在商户平台设置
+    public static final  String API_KEY= "";
+
+    //商户号 微信分配的公众账号ID
+    public static final String MCH_ID = "";
 
 
 }

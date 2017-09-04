@@ -137,7 +137,7 @@ public class WechatPayReq implements IWXAPIEventHandler {
 		
 		
 		/**
-		 * 设置
+		 * 随机字符串
 		 * @param nonceStr
 		 * @return
 		 */
@@ -180,6 +180,7 @@ public class WechatPayReq implements IWXAPIEventHandler {
 			wechatPayReq.prepayId = this.prepayId;
 			//"Sign=WXPay"
 			wechatPayReq.packageValue = this.packageValue;
+			//随机字符串
 			wechatPayReq.nonceStr = this.nonceStr;
 			//时间戳
 			wechatPayReq.timeStamp = this.timeStamp;

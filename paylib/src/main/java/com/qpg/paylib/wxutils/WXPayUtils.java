@@ -41,9 +41,11 @@ public class WXPayUtils {
 
     public String asd;
     private  BackResult backResult;
+    HashMap<String,Object> orderInfoMap=new HashMap<>();
     //执行线程生成sign
-    public WXPayUtils init(Context context){
+    public WXPayUtils init(Context context,HashMap<String,Object> orderInfoMap){
 
+        this.orderInfoMap=orderInfoMap;
         api = WXAPIFactory.createWXAPI(context, PayConstants.WXPay_APPID);
         mTask = new GetPrepayIdTask();
         mTask.execute();
@@ -97,20 +99,20 @@ public class WXPayUtils {
         List<NameValuePair> packageParams = new ArrayList<NameValuePair>();
         // APPID
         packageParams
-                .add(new BasicNameValuePair("appid", PayConstants.WXPay_APPID));
+                .add(new BasicNameValuePair("appid", orderInfoMap.get("WXPay_APPID").toString()));
         // 商品描述
-        packageParams.add(new BasicNameValuePair("body","1231"));
+        packageParams.add(new BasicNameValuePair("body",orderInfoMap.get("body").toString()));
         // 商户ID
-        packageParams.add(new BasicNameValuePair("mch_id",PayConstants.WXPay_mch_id));
+        packageParams.add(new BasicNameValuePair("mch_id",orderInfoMap.get("WXPay_mch_id").toString()));
         // 随机字符串
         packageParams.add(new BasicNameValuePair("nonce_str",nonceStr));
         // 回调接口地址
-        packageParams.add(new BasicNameValuePair("notify_url","www.baidu.com"));
+        packageParams.add(new BasicNameValuePair("notify_url",orderInfoMap.get("notify_url").toString()));
         // 我们的订单号
-        packageParams.add(new BasicNameValuePair("out_trade_no","no2017062800346232"));
+        packageParams.add(new BasicNameValuePair("out_trade_no",orderInfoMap.get("orderNo").toString()));
         // 提交用户端ip
         packageParams.add(new BasicNameValuePair("spbill_create_ip",getLocalHostIp()));
-        BigDecimal totalFeeBig = new BigDecimal("100");
+        BigDecimal totalFeeBig = new BigDecimal(orderInfoMap.get("orderMoney").toString());
         int totalFee = totalFeeBig.multiply(new BigDecimal(1)).intValue();//订单金额
         // 总金额 !
         packageParams.add(new BasicNameValuePair("total_fee",String.valueOf(totalFee)));
@@ -295,7 +297,7 @@ public class WXPayUtils {
         return ipaddress;
     }
 
-   public interface BackResult{
+    public interface BackResult{
         void getInfo(String prepayId, String sign);
     }
 }

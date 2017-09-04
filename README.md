@@ -22,34 +22,43 @@
         PayAPI.getInstance().sendPayRequest(wechatPayReq);
 
 
-        //关于微信支付的回调
+        //微信支付结果的回调，如果不用可以不添加
         //wechatPayReq.setOnWechatPayListener(new OnWechatPayListener);
 
 
 ```
 
 ##方案二：统一下单接口的调取在移动端
+
 ```java
- new WXPayUtils().init(MainActivity.this)
-                        .setListener(new WXPayUtils.BackResult() {
-                            @Override
-                            public void getInfo(String prepayId, String sign) {
-                                WechatPayReq wechatPayReq = new WechatPayReq.Builder()
-                                        .with(MainActivity.this) //activity instance
-                                        .setAppId(PayConstants.WXPay_APPID) //wechat pay AppID
-                                        .setPartnerId(PayConstants.WXPay_mch_id)//wechat pay partner id
-                                        .setPrepayId(prepayId)//pre pay id
-                                        .setNonceStr("")
-                                        .setTimeStamp("")//time stamp
-                                        .setSign(sign)//sign
-                                        .create();
-                                //2. send the request with wechat pay
-                                PayAPI.getInstance().sendPayRequest(wechatPayReq);
-                            }
-                        });
+
+     //字段名不能改，改了会报错
+     HashMap<String,Object> map=new HashMap<String, Object>();
+     map.put("WXPay_APPID","123131231");
+     map.put("WXPay_mch_id","123131231");
+     map.put("orderNo","123131231");
+     map.put("orderMoney",1);
+     map.put("notify_url","www.baidu.com");
+     map.put("body","商品描述");
+ 
+     new WXPayUtils().init(MainActivity.this,map)
+            .setListener(new WXPayUtils.BackResult() {
+                @Override
+                public void getInfo(String prepayId, String sign) {
+                    WechatPayReq wechatPayReq = new WechatPayReq.Builder()
+                            .with(MainActivity.this) //activity instance
+                            .setAppId(PayConstants.WXPay_APPID) //wechat pay AppID
+                            .setPartnerId(PayConstants.WXPay_mch_id)//wechat pay partner id
+                            .setPrepayId(prepayId)//预订单号
+                            .setNonceStr("")
+                            .setTimeStamp("")//时间戳，可为空
+                            .setSign(sign)//签名
+                            .create();
+                    //2. send the request with wechat pay
+                    PayAPI.getInstance().sendPayRequest(wechatPayReq);
+                }
+            });
 ```
-
-
 
 >注意：这里没有金额设置，金额的信息已经包含在预支付码prepayid了。
 
@@ -144,7 +153,5 @@ https://doc.open.alipay.com/docs/doc.htm?spm=a219a.7629140.0.0.sdGXaH&treeId=204
 ### 支付宝支付
 
  - 支付宝支付为了保证交易双方的身份和数据安全， 需要配置双方密钥。
-
     详情请参考支付宝支付的密钥处理体系文档。
-
     https://doc.open.alipay.com/docs/doc.htm?spm=a219a.7629140.0.0.1wPnBT&treeId=204&articleId=106079&docType=1
