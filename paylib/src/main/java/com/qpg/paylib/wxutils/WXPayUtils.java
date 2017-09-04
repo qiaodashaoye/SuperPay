@@ -46,7 +46,7 @@ public class WXPayUtils {
     public WXPayUtils init(Context context,HashMap<String,Object> orderInfoMap){
 
         this.orderInfoMap=orderInfoMap;
-        api = WXAPIFactory.createWXAPI(context, PayConstants.WXPay_APPID);
+        api = WXAPIFactory.createWXAPI(context, PayConstants.APP_ID);
         mTask = new GetPrepayIdTask();
         mTask.execute();
         return this;
@@ -144,7 +144,7 @@ public class WXPayUtils {
                 sb.append('&');
             }
             sb.append("key=");
-            sb.append(PayConstants.WXPay_key);
+            sb.append(PayConstants.API_KEY);
 
             String packageSign = MD5.getMessageDigest(
                     sb.toString().getBytes("utf-8")).toUpperCase();
@@ -232,8 +232,8 @@ public class WXPayUtils {
      */
     private  void sendPayReq(String prepayId) {
         PayReq req = new PayReq();
-        req.appId = PayConstants.WXPay_APPID;
-        req.partnerId = PayConstants.WXPay_mch_id;
+        req.appId = PayConstants.APP_ID;
+        req.partnerId = PayConstants.MCH_ID;
         req.prepayId = prepayId;
         req.nonceStr = genNonceStr();
         req.timeStamp = String.valueOf(genTimeStamp());
@@ -253,7 +253,7 @@ public class WXPayUtils {
         // 微信支付结果界面对调起支付Activity的处理
         // APPCache.payActivity.put("调起支付的Activity",(调起支付的Activity)context);
         // 在支付之前，如果应用没有注册到微信，应该先调用IWXMsg.registerApp将应用注册到微信
-        api.registerApp(PayConstants.WXPay_APPID);
+        api.registerApp(PayConstants.APP_ID);
         api.sendReq(req);
         // 支付完成后微信会回调 wxapi包下 WXPayEntryActivity 的public void onResp(BaseResp
         // resp)方法，所以后续操作，放在这个回调函数中操作就可以了
