@@ -36,7 +36,7 @@ dependencies {
     // compile 'org.apache.httpcomponents.client5:httpclient5:5.0-alpha2'
     compile 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
     testCompile 'junit:junit:4.12'
-    compile files('libs/alipaySingle-20170510.jar')
     compile files('libs/httpcore-4.4.6.jar')
     compile files('libs/httpclient-4.5.3.jar')
+    compile files('libs/alipaySdk-20170725.jar')
 }

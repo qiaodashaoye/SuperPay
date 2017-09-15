@@ -12,7 +12,7 @@
   		}
   	}	
 ```
-> compile 'com.github.qiaodashaoye:SimplePay:1.0.1'
+> compile 'com.github.qiaodashaoye:SimplePay:1.0.2'
 
 # 二、使用
 ### 微信支付使用（两种方案）
@@ -34,25 +34,22 @@
         //2.发送微信支付请求
         PayAPI.getInstance().sendPayRequest(wechatPayReq);
 
-
-        //微信支付结果的回调，如果不用可以不添加
-        //wechatPayReq.setOnWechatPayListener(new OnWechatPayListener);
-
-
 ```
+>注意：prepayid(预支付码)一定要正确，里面包含订单的金额，。
+
 
 ##方案二：统一下单接口的调取在移动端
 
 ```java
-
      //字段名不能改，改了会报错
-     HashMap<String,Object> map=new HashMap<String, Object>();
-     map.put("WXPay_APPID","123131231");
-     map.put("WXPay_mch_id","123131231");
-     map.put("orderNo","123131231");
-     map.put("orderMoney",1);
-     map.put("notify_url","www.baidu.com");
-     map.put("body","商品描述");
+      map.put("wx_appid",PayConstants.APP_ID);
+      map.put("wx_mch_id",PayConstants.MCH_ID);
+      map.put("wx_key",PayConstants.API_KEY);
+      map.put("orderNo","");
+      //   map.put("orderMoney",confirmMoney*100);
+      map.put("orderMoney",1);
+      map.put("notify_url","www.baidu.com");
+      map.put("body","商品描述");
  
      new WXPayUtils().init(MainActivity.this,map)
             .setListener(new WXPayUtils.BackResult() {
@@ -72,21 +69,30 @@
                 }
             });
 ```
-
->注意：这里没有金额设置，金额的信息已经包含在预支付码prepayid了。
-
+> 关于微信支付完成（失败、成功、取消）后的回调，必须在与包名同级下建立名为
+wxapi的文件夹，并在文件夹下建立WXPayEntryActivity类并实现IWXAPIEventHandler接口，
+所建的类名必须是WXPayEntryActivity，不然不会执行onResp()回调方法。
 ### 支付宝支付使用
-
+ > 写在前面：
+ ```java
+  /** 商户私钥，pkcs8格式 */
+  /** 如下私钥，RSA_PRIVATE 或者 RSA2_PRIVATE 只需要填入一个 */
+  /** 如果商户两个都设置了，优先使用 RSA2_PRIVATE */
+  /** RSA2_PRIVATE 可以保证商户交易在更加安全的环境下进行，建议使用 RSA2_PRIVATE */
+  /** 获取 RSA2_PRIVATE，建议使用支付宝提供的公私钥生成工具生成， */
+  /** 工具地址：https://doc.open.alipay.com/docs/doc.htm?treeId=291&articleId=106097&docType=1 */
+```
+                     
 #### 支付宝支付第一种方式(不建议用这种方式，商户私钥暴露在客户端，极其危险，推荐用第二种支付方式)
 ```java
 
         //1.创建支付宝支付配置
         AliPayAPI.Config config = new AliPayAPI.Config.Builder()
-                .setRsaPrivate(rsa_private) //设置私钥 (商户私钥，pkcs8格式)
-                .setRsaPublic(rsa_public)//设置公钥(// 支付宝公钥)
-                .setPartner(partner) //设置商户
-                .setSeller(seller) //设置商户收款账号
-                .create();
+                  .setRsaPrivate("") //设置RSA私钥
+                  .setRsa2Private("") //设置RSA2私钥
+                  .setRsaPublic("")//设置公钥
+                  .setAppid(PayConstants.Appid)//设置appid
+                  .create();
 
         //2.创建支付宝支付请求
         AliPayReq aliPayReq = new AliPayReq.Builder()
@@ -113,14 +119,14 @@
 ```java
         //1.创建支付宝支付订单的信息
         String rawAliOrderInfo = new AliPayReq2.AliOrderInfo()
-                .setPartner(partner) //商户PID || 签约合作者身份ID
-                .setSeller(seller)  // 商户收款账号 || 签约卖家支付宝账号
-                .setOutTradeNo(outTradeNo) //设置唯一订单号
-                .setSubject(orderSubject) //设置订单标题
-                .setBody(orderBody) //设置订单内容
-                .setPrice(price) //设置订单价格
-                .setCallbackUrl(callbackUrl) //设置回调链接
-                .createOrderInfo(); //创建支付宝支付订单信息
+                 .setAppid(appid)  // appid
+                 .setIsRsa2(true)  // 是否为RSA2私钥
+                 .setOutTradeNo(outTradeNo) //设置唯一订单号
+                 .setSubject(orderSubject) //设置订单标题
+                 .setBody(orderBody) //设置订单内容
+                 .setPrice(price) //设置订单价格
+                 .setCallbackUrl(callbackUrl) //设置回调链接
+                 .createOrderInfo(); //创建支付宝支付订单信息
 
 
         //2.签名  支付宝支付订单的信息 ===>>>  商户私钥签名之后的订单信息

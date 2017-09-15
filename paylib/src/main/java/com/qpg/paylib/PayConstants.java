@@ -5,14 +5,18 @@ package com.qpg.paylib;
  */
 
 public class PayConstants {
+    public static final String APPID = "";
     // 商户PID
     public static final String PARTNER = "";
     // 商户收款账号
-    public static final String SELLER = "";
+    public static final String Appid = "";
     // 商户私钥，pkcs8格式
     public static final String RSA_PRIVATE = "";
+    public static final String RSA2_PRIVATE = "";
     // 支付宝公钥
     public static final String RSA_PUBLIC = "";
+
+
 
 
 

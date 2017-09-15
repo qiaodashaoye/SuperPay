@@ -55,9 +55,9 @@ public class MainActivity extends AppCompatActivity {
      */
     public void testAliPay(){
         String rsa_private      = "";
+        String rsa2_private      = "";
         String rsa_public       = "";
-        String partner          = "";
-        String seller           = "";
+        String appid          = "";
 
         Activity activity       = this;
         String outTradeNo       = "";
@@ -66,11 +66,17 @@ public class MainActivity extends AppCompatActivity {
         String orderBody        = "";
         String callbackUrl      = "";
 
+        /** 商户私钥，pkcs8格式 */
+        /** 如下私钥，setRsaPrivate 或者 setRsa2Private 只需要填入一个 */
+        /** 如果商户两个都设置了，优先使用 setRsa2Private */
+        /** RSA2_PRIVATE 可以保证商户交易在更加安全的环境下进行，建议使用 setRsa2Private */
+        /** 获取 setRsa2Private，建议使用支付宝提供的公私钥生成工具生成， */
+        /** 工具地址：https://doc.open.alipay.com/docs/doc.htm?treeId=291&articleId=106097&docType=1 */
         AliPayAPI.Config config = new AliPayAPI.Config.Builder()
                 .setRsaPrivate(rsa_private) //设置私钥
+                .setRsa2Private(rsa2_private) //设置私钥
                 .setRsaPublic(rsa_public)//设置公钥
-                .setPartner(partner) //设置商户
-                .setSeller(seller) //设置商户收款账号
+                .setAppid(appid)//设置appid
                 .create();
 
         AliPayReq aliPayReq = new AliPayReq.Builder()
@@ -91,8 +97,7 @@ public class MainActivity extends AppCompatActivity {
      * 安全的支付宝支付测试
      */
     public void testAliPaySafely(){
-        String partner          = "";
-        String seller           = "";
+        String appid           = "";
 
         Activity activity       = this;
         String outTradeNo       = "";
@@ -103,8 +108,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         String rawAliOrderInfo = new AliPayReq2.AliOrderInfo()
-                                .setPartner(partner) //商户PID || 签约合作者身份ID
-                                .setSeller(seller)  // 商户收款账号 || 签约卖家支付宝账号
+                                .setAppid(appid)  // appid
+                                .setIsRsa2(true)  // 是否为RSA2私钥
                                 .setOutTradeNo(outTradeNo) //设置唯一订单号
                                 .setSubject(orderSubject) //设置订单标题
                                 .setBody(orderBody) //设置订单内容

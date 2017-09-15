@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * Created by Administrator on 2017/6/28.
+ * Created by qpg on 2017/6/28.
  */
 
 public class WXPayUtils {
@@ -46,7 +46,7 @@ public class WXPayUtils {
     public WXPayUtils init(Context context,HashMap<String,Object> orderInfoMap){
 
         this.orderInfoMap=orderInfoMap;
-        api = WXAPIFactory.createWXAPI(context, PayConstants.APP_ID);
+        api = WXAPIFactory.createWXAPI(context,orderInfoMap.get("wx_appid").toString());
         mTask = new GetPrepayIdTask();
         mTask.execute();
         return this;
@@ -99,11 +99,11 @@ public class WXPayUtils {
         List<NameValuePair> packageParams = new ArrayList<NameValuePair>();
         // APPID
         packageParams
-                .add(new BasicNameValuePair("appid", orderInfoMap.get("WXPay_APPID").toString()));
+                .add(new BasicNameValuePair("appid",orderInfoMap.get("wx_appid").toString()));
         // 商品描述
         packageParams.add(new BasicNameValuePair("body",orderInfoMap.get("body").toString()));
         // 商户ID
-        packageParams.add(new BasicNameValuePair("mch_id",orderInfoMap.get("WXPay_mch_id").toString()));
+        packageParams.add(new BasicNameValuePair("mch_id",orderInfoMap.get("wx_mch_id").toString()));
         // 随机字符串
         packageParams.add(new BasicNameValuePair("nonce_str",nonceStr));
         // 回调接口地址
@@ -144,7 +144,7 @@ public class WXPayUtils {
                 sb.append('&');
             }
             sb.append("key=");
-            sb.append(PayConstants.API_KEY);
+            sb.append(orderInfoMap.get("wx_key").toString());
 
             String packageSign = MD5.getMessageDigest(
                     sb.toString().getBytes("utf-8")).toUpperCase();
@@ -232,8 +232,8 @@ public class WXPayUtils {
      */
     private  void sendPayReq(String prepayId) {
         PayReq req = new PayReq();
-        req.appId = PayConstants.APP_ID;
-        req.partnerId = PayConstants.MCH_ID;
+        req.appId = orderInfoMap.get("wx_appid").toString();
+        req.partnerId =orderInfoMap.get("wx_mch_id").toString();
         req.prepayId = prepayId;
         req.nonceStr = genNonceStr();
         req.timeStamp = String.valueOf(genTimeStamp());
@@ -253,7 +253,7 @@ public class WXPayUtils {
         // 微信支付结果界面对调起支付Activity的处理
         // APPCache.payActivity.put("调起支付的Activity",(调起支付的Activity)context);
         // 在支付之前，如果应用没有注册到微信，应该先调用IWXMsg.registerApp将应用注册到微信
-        api.registerApp(PayConstants.APP_ID);
+        api.registerApp(orderInfoMap.get("wx_appid").toString());
         api.sendReq(req);
         // 支付完成后微信会回调 wxapi包下 WXPayEntryActivity 的public void onResp(BaseResp
         // resp)方法，所以后续操作，放在这个回调函数中操作就可以了

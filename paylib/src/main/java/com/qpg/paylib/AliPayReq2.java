@@ -7,10 +7,13 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.alipay.sdk.app.PayTask;
+import com.qpg.paylib.alipay.OrderInfoUtil2_0;
 import com.qpg.paylib.alipay.PayResult;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -44,7 +47,7 @@ public class AliPayReq2 {
 			public void handleMessage(Message msg) {
 				switch (msg.what) {
 				case SDK_PAY_FLAG: {
-					PayResult payResult = new PayResult((String) msg.obj);
+					PayResult payResult = new PayResult((Map<String, String>) msg.obj);
 
 					// 支付宝返回此次支付结果及加签，建议对支付宝签名信息拿签约时支付宝提供的公钥做验签
 					String resultInfo = payResult.getResult();
@@ -89,9 +92,6 @@ public class AliPayReq2 {
 	 */
 	public void send() {
 		// 创建订单信息
-//		String orderInfo = getOrderInfo(this.partner,
-//				this.seller, this.outTradeNo, this.subject, this.body,
-//				this.price, this.callbackUrl);
 		String orderInfo = rawAliPayOrderInfo;
 		// 做RSA签名之后的订单信息
 		String sign = signedAliPayOrderInfo;
@@ -285,31 +285,20 @@ public class AliPayReq2 {
 	 * 所以为了避免商户私钥暴露在客户端，订单的加密过程放到服务器去处理
 	 */
 	public static class AliOrderInfo{
-		String partner;
-		String seller;
+		boolean isRsa2;
+		String appid;
 		String outTradeNo;
 		String subject;
 		String body;
 		String price;
 		String callbackUrl;
 
-		/**
-		 * 设置商户
-		 * @param partner
-		 * @return
-		 */
-		public AliOrderInfo setPartner(String partner){
-			this.partner = partner;
+		public AliOrderInfo setAppid(String appid){
+			this.appid = appid;
 			return this;
 		}
-
-		/**
-		 * 设置商户账号
-		 * @param seller
-		 * @return
-		 */
-		public AliOrderInfo setSeller(String seller){
-			this.seller = seller;
+		public AliOrderInfo setIsRsa2(boolean isRsa2){
+			this.isRsa2 = isRsa2;
 			return this;
 		}
 
@@ -368,8 +357,20 @@ public class AliPayReq2 {
 		 * @return
 		 */
 		public String createOrderInfo(){
-//			(String partner, String seller, String outTradeNo, String subject, String body, String price, String callbackUrl) {
-			return getOrderInfo(partner, seller, outTradeNo, subject, body, price, callbackUrl);
+
+			HashMap<String,Object> map=new HashMap<>();
+			map.put("app_id",appid);
+			map.put("notify_url",callbackUrl);
+			map.put("out_trade_no",outTradeNo);
+			map.put("total_amount",price);
+			map.put("body",body);
+			map.put("subject",subject);
+
+			//默认RSA2私钥
+			Map<String, String> params = OrderInfoUtil2_0.buildOrderParamMap(map, isRsa2);
+			// 创建订单信息
+			String orderParam = OrderInfoUtil2_0.buildOrderParam(params);
+			return orderParam;
 		}
 	}
 

@@ -19,7 +19,7 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
  * @author Administrator
  *
  */
-public class WechatPayReq implements IWXAPIEventHandler {
+public class WechatPayReq{
 	
 	private static final String TAG = WechatPayReq.class.getSimpleName();
 
@@ -52,8 +52,6 @@ public class WechatPayReq implements IWXAPIEventHandler {
 	 */
 	public void send() {
         mWXApi = WXAPIFactory.createWXAPI(mActivity, null);
-        mWXApi.handleIntent(mActivity.getIntent(), this);
-        
         mWXApi.registerApp(this.appId);
         
         PayReq request = new PayReq();
@@ -191,49 +189,5 @@ public class WechatPayReq implements IWXAPIEventHandler {
 		}
 		
 	}
-	
-	
-	//微信支付监听
-	private OnWechatPayListener mOnWechatPayListener;
-	public WechatPayReq setOnWechatPayListener(OnWechatPayListener onWechatPayListener) {
-		this.mOnWechatPayListener = onWechatPayListener;
-		return this;
-	}
 
-	/**
-	 * 微信支付监听
-	 * @author Administrator
-	 *
-	 */
-	public interface OnWechatPayListener{
-		public void onPaySuccess(int errorCode);
-		public void onPayFailure(int errorCode);
-	}
-
-	@Override
-	public void onReq(BaseReq baseReq) {
-		Toast.makeText(this.mActivity, "onReq===>>>get baseReq.getType : "+baseReq.getType(), Toast.LENGTH_LONG).show();
-        Log.d(TAG,"onReq===>>>get baseReq.getType : "+baseReq.getType());
-	}
-
-
-	@Override
-	public void onResp(BaseResp resp) {
-        Toast.makeText(this.mActivity, "onResp===>>>get resp.getType : "+ resp.getType(), Toast.LENGTH_LONG).show();
-        
-//        0	成功	展示成功页面
-//        -1	错误	可能的原因：签名错误、未注册APPID、项目设置APPID不正确、注册的APPID与设置的不匹配、其他异常等。
-//        -2	用户取消	无需处理。发生场景：用户不支付了，点击取消，返回APP。
-        
-        if(resp.getType()== ConstantsAPI.COMMAND_PAY_BY_WX){
-            Log.d(TAG,"onPayFinish,errCode="+resp.errCode);
-            if(this.mOnWechatPayListener != null){
-            	if(resp.errCode == BaseResp.ErrCode.ERR_OK){ //        0 成功	展示成功页面
-            		this.mOnWechatPayListener.onPaySuccess(resp.errCode);
-            	}else{//  -1	错误       -2	用户取消
-            		this.mOnWechatPayListener.onPayFailure(resp.errCode);	
-            	}
-            }
-        }
-	}
 }

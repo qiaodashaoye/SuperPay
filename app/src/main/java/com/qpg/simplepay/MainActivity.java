@@ -26,28 +26,30 @@ public class MainActivity extends AppCompatActivity {
         payAli.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // step 1 create config for ali pay
+                /** 商户私钥，pkcs8格式 */
+                /** 如下私钥，setRsaPrivate 或者 setRsa2Private 只需要填入一个 */
+                /** 如果商户两个都设置了，优先使用 setRsa2Private */
+                /** RSA2_PRIVATE 可以保证商户交易在更加安全的环境下进行，建议使用 setRsa2Private */
+                /** 获取 setRsa2Private，建议使用支付宝提供的公私钥生成工具生成， */
+                /** 工具地址：https://doc.open.alipay.com/docs/doc.htm?treeId=291&articleId=106097&docType=1 */
                 AliPayAPI.Config config = new AliPayAPI.Config.Builder()
-                        .setRsaPrivate(PayConstants.RSA_PRIVATE) // 商户私钥，pkcs8格式
-                        .setRsaPublic(PayConstants.RSA_PUBLIC)//支付宝公钥
-                        .setPartner(PayConstants.PARTNER) //商户PID
-                        .setSeller(PayConstants.SELLER) //商户收款账号
+                        .setRsaPrivate("") //设置RSA私钥
+                        .setRsa2Private("") //设置RSA2私钥
+                        .setRsaPublic("")//设置公钥
+                        .setAppid(PayConstants.Appid)//设置appid
                         .create();
 
-                //step 2 create reqeust for ali
                 AliPayReq aliPayReq = new AliPayReq.Builder()
-                        .with(MainActivity.this)//Activity instance
-                        .apply(config)// the above custome config
-                        .setOutTradeNo("no12335357745")//set unique trade no
-                        .setPrice("0.01")//set price
-                        .setSubject("测试")//set order subject
-                        .setBody("测试")//set order detail
-                        .setCallbackUrl("www.baidu.com")//set callback for pay reqest
-                        .create()//
-                        .setOnAliPayListener(null);//
+                        .with(MainActivity.this)//Activity实例
+                        .apply(config)//支付宝支付通用配置
+                        .setOutTradeNo("4234234")//设置唯一订单号
+                        .setPrice("0.01")//设置订单价格
+                        .setSubject("3132131")//设置订单标题
+                        .setBody("31323")//设置订单内容 订单详情
+                        .setCallbackUrl("www.baidu.com")//设置回调地址
+                        .create();//
+                AliPayAPI.getInstance().apply(config).sendPayReq(aliPayReq);
 
-                //step 3 send the request for ali pay
-                PayAPI.getInstance().sendPayRequest(aliPayReq);
             }
         });
 
@@ -56,9 +58,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 HashMap<String,Object> map=new HashMap<String, Object>();
-                map.put("WXPay_APPID","123131231");
-                map.put("WXPay_mch_id","123131231");
-                map.put("orderNo","123131231");
+                map.put("wx_appid",PayConstants.APP_ID);
+                map.put("wx_mch_id",PayConstants.MCH_ID);
+                map.put("wx_key",PayConstants.API_KEY);
+
+                map.put("orderNo","");
+                //   map.put("orderMoney",confirmMoney*100);
                 map.put("orderMoney",1);
                 map.put("notify_url","www.baidu.com");
                 map.put("body","商品描述");
