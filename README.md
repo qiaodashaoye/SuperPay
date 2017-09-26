@@ -1,18 +1,12 @@
 # SimplePay
 
 [![](https://jitpack.io/v/qiaodashaoye/SimplePay.svg)](https://jitpack.io/#qiaodashaoye/SimplePay)
-
+[![License](https://img.shields.io/badge/license-Apache%202-green.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+[![Download](https://api.bintray.com/packages/qpglibs/maven/SimplePay/images/download.svg)](https://bintray.com/qpglibs/maven/SimplePay/_latestVersion) ](https://bintray.com/qpglibs/maven/SimplePay/_latestVersion)
 集成微信和支付宝支付，微信支付遇到的坑，我来帮你填，App内嵌支付如此简单。
 # 一、集成步骤
- ```java
-  allprojects {
-  		repositories {
-  			...
-  			maven { url 'https://jitpack.io' }
-  		}
-  	}	
-```
-> compile 'com.github.qiaodashaoye:SimplePay:1.0.2'
+
+> compile 'com.qpg:paylib:1.0.0'
 
 # 二、使用
 ### 微信支付使用（两种方案）
@@ -146,7 +140,7 @@ wxapi的文件夹，并在文件夹下建立WXPayEntryActivity类并实现IWXAPI
         //aliPayReq.setOnAliPayListener(new OnAliPayListener);
 ```
 
-## 文档
+## 帮助
 
 ### 微信支付官方文档 支付流程
 https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=8_5
@@ -154,22 +148,5 @@ https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=8_5
 ### 支付宝支付官方文档 支付流程
 https://doc.open.alipay.com/docs/doc.htm?spm=a219a.7629140.0.0.sdGXaH&treeId=204&articleId=105296&docType=1
 
-
-
-## 注意
-
-### 微信支付
-
- - 微信支付必须要在**正式签名**和**正确包名**的应用中才能成功调起。(**重点)
-
-    即商户在微信开放平台申请开发应用后对应包名和对应签名的应用才能成功调起。
-    详情请参考微信支付的开发流程文档。
-
-    https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=8_5
-
- - 微信支付API没有在客户端显示的设置回调，回调是在Server端设置的。(与支付宝支付的区别，支付宝的回调是在客户端设置的)
-
-### 支付宝支付
- - 支付宝支付为了保证交易双方的身份和数据安全， 需要配置双方密钥。
-    详情请参考支付宝支付的密钥处理体系文档。
-    https://doc.open.alipay.com/docs/doc.htm?spm=a219a.7629140.0.0.1wPnBT&treeId=204&articleId=106079&docType=1
+### 支付宝支付的密钥处理体系文档。
+https://doc.open.alipay.com/docs/doc.htm?spm=a219a.7629140.0.0.1wPnBT&treeId=204&articleId=106079&docType=1

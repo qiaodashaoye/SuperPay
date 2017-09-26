@@ -126,30 +126,6 @@ public class AliPayReq2 {
 		Thread payThread = new Thread(payRunnable);
 		payThread.start();
 	}
-	
-	/**
-	 * 查询终端设备是否存在支付宝认证账户
-	 */
-//	public void check(){
-//		Runnable checkRunnable = new Runnable() {
-//
-//			@Override
-//			public void run() {
-//				// 构造PayTask 对象
-//				PayTask payTask = new PayTask(mActivity);
-//				// 调用查询接口，获取查询结果
-//				boolean isExist = payTask.checkAccountIfExist();
-//
-//				Message msg = new Message();
-//				msg.what = SDK_CHECK_FLAG;
-//				msg.obj = isExist;
-//				mHandler.sendMessage(msg);
-//			}
-//		};
-//
-//		Thread checkThread = new Thread(checkRunnable);
-//		checkThread.start();
-//	}
 
 	
 	/**
