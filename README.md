@@ -1,8 +1,7 @@
 # SimplePay
 
-[![](https://jitpack.io/v/qiaodashaoye/SimplePay.svg)](https://jitpack.io/#qiaodashaoye/SimplePay)
 [![License](https://img.shields.io/badge/license-Apache%202-green.svg)](https://www.apache.org/licenses/LICENSE-2.0)
-[![Download](https://api.bintray.com/packages/qpglibs/maven/SimplePay/images/download.svg)](https://bintray.com/qpglibs/maven/SimplePay/_latestVersion) ](https://bintray.com/qpglibs/maven/SimplePay/_latestVersion)
+[![Download](https://api.bintray.com/packages/qpglibs/maven/SimplePay/images/download.svg)](https://bintray.com/qpglibs/maven/SimplePay/_latestVersion)
 集成微信和支付宝支付，微信支付遇到的坑，我来帮你填，App内嵌支付如此简单。
 # 一、集成步骤
 
