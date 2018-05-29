@@ -69,16 +69,16 @@ public class OrderInfoUtil2_0 {
 
 		keyValues.put("app_id", orderInfoMap.get("app_id").toString());
 
-		keyValues.put("biz_content", "{\"timeout_express\":\"30m\",\"product_code\":\"QUICK_MSECURITY_PAY\",\"total_amount\":\"0.01\",\"subject\":\"1\",\"body\":\"我是测试数据\",\"out_trade_no\":\"" + orderInfoMap.get("out_trade_no").toString() +  "\"}");
-		
+		keyValues.put("biz_content", "{\"timeout_express\":\"30m\",\"product_code\":\"QUICK_MSECURITY_PAY\",\"total_amount\":\""+orderInfoMap.get("total_amount").toString()+"\",\"subject\":\""+orderInfoMap.get("subject").toString()+"\",\"body\":\""+orderInfoMap.get("body").toString()+"\",\"out_trade_no\":\"" + orderInfoMap.get("out_trade_no").toString() +  "\"}");
+
 		keyValues.put("charset", "utf-8");
 		keyValues.put("notify_url",orderInfoMap.get("notify_url").toString());
 
 		keyValues.put("method", "alipay.trade.app.pay");
 
 		keyValues.put("sign_type", rsa2 ? "RSA2" : "RSA");
-
-		keyValues.put("timestamp", "2016-07-29 16:55:53");
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+		keyValues.put("timestamp", df.format(new Date()));
 
 		keyValues.put("version", "1.0");
 		

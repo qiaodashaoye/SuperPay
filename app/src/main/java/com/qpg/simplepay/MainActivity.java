@@ -34,17 +34,17 @@ public class MainActivity extends AppCompatActivity {
                 /** 工具地址：https://doc.open.alipay.com/docs/doc.htm?treeId=291&articleId=106097&docType=1 */
                 AliPayAPI.Config config = new AliPayAPI.Config.Builder()
                         .setRsaPrivate("") //设置RSA私钥
-                        .setRsa2Private("") //设置RSA2私钥
-                        .setRsaPublic("")//设置公钥
-                        .setAppid(PayConstants.Appid)//设置appid
+                        .setRsa2Private(Contant.RSA_PRIVATE) //设置RSA2私钥
+                        .setRsaPublic(Contant.RSA_PUBLIC)//设置公钥
+                        .setAppid(Contant.APPID)//设置appid
                         .create();
 
                 AliPayReq aliPayReq = new AliPayReq.Builder()
                         .with(MainActivity.this)//Activity实例
                         .apply(config)//支付宝支付通用配置
-                        .setOutTradeNo("4234234")//设置唯一订单号
-                        .setPrice("0.01")//设置订单价格
-                        .setSubject("3132131")//设置订单标题
+                        .setOutTradeNo(System.currentTimeMillis()+"")//设置唯一订单号
+                        .setPrice("0.1")//设置订单价格
+                        .setSubject("充值")//设置订单标题
                         .setBody("31323")//设置订单内容 订单详情
                         .setCallbackUrl("www.baidu.com")//设置回调地址
                         .create();//
@@ -58,9 +58,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 HashMap<String,Object> map=new HashMap<String, Object>();
-                map.put("wx_appid",PayConstants.APP_ID);
-                map.put("wx_mch_id",PayConstants.MCH_ID);
-                map.put("wx_key",PayConstants.API_KEY);
+                map.put("wx_appid",Contant.APP_ID);
+                map.put("wx_mch_id",Contant.MCH_ID);
+                map.put("wx_key",Contant.API_KEY);
 
                 map.put("orderNo","");
                 //   map.put("orderMoney",confirmMoney*100);
@@ -74,8 +74,8 @@ public class MainActivity extends AppCompatActivity {
                             public void getInfo(String prepayId, String sign) {
                                 WechatPayReq wechatPayReq = new WechatPayReq.Builder()
                                         .with(MainActivity.this) //activity instance
-                                        .setAppId(PayConstants.APP_ID) //wechat pay AppID
-                                        .setPartnerId(PayConstants.MCH_ID)//wechat pay partner id
+                                        .setAppId(Contant.APP_ID) //wechat pay AppID
+                                        .setPartnerId(Contant.MCH_ID)//wechat pay partner id
                                         .setPrepayId(prepayId)//pre pay id
                                         .setNonceStr("")
                                         .setTimeStamp("")//time stamp
