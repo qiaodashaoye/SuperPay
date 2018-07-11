@@ -29,12 +29,12 @@ public class AliPayReq {
 	 */
 	private static final int SDK_PAY_FLAG = 1;
 	private static final int SDK_CHECK_FLAG = 2;
-	
+
 	private Activity mActivity;
-	
+
 	//支付宝支付的配置
 	private AliPayAPI.Config mConfig;
-	
+
 	// 商户网站唯一订单号
 	private String outTradeNo;
 	// 商品名称
@@ -45,7 +45,7 @@ public class AliPayReq {
 	private String price;
 	// 服务器异步通知页面路径
 	private String callbackUrl;
-	
+
 	private Handler mHandler;
 
 	public AliPayReq() {
@@ -59,46 +59,46 @@ public class AliPayReq {
 			@Override
 			public void handleMessage(Message msg) {
 				switch (msg.what) {
-				case SDK_PAY_FLAG: {
-					@SuppressWarnings("unchecked")
-					PayResult payResult = new PayResult((Map<String, String>) msg.obj);
-					/**
-					 对于支付结果，请商户依赖服务端的异步通知结果。同步通知结果，仅作为支付结束的通知。
-					 */
-					String resultInfo = payResult.getResult();// 同步返回需要验证的信息
-					String resultStatus = payResult.getResultStatus();
-					// 判断resultStatus 为9000则代表支付成功
-					if (TextUtils.equals(resultStatus, "9000")) {
-						// 该笔订单是否真实支付成功，需要依赖服务端的异步通知。
-						Toast.makeText(mActivity, "支付成功", Toast.LENGTH_SHORT).show();
-						if(mOnAliPayListener != null) mOnAliPayListener.onPaySuccess(resultInfo);
-					} else {
-						// 该笔订单真实的支付结果，需要依赖服务端的异步通知。
-						// 判断resultStatus 为非“9000”则代表可能支付失败
-						// “8000”代表支付结果因为支付渠道原因或者系统原因还在等待支付结果确认，最终交易是否成功以服务端异步通知为准（小概率状态）
-						if (TextUtils.equals(resultStatus, "8000")) {
-							Toast.makeText(mActivity, "支付结果确认中", Toast.LENGTH_SHORT).show();
-							if(mOnAliPayListener != null) mOnAliPayListener.onPayConfirmimg(resultInfo);
-
+					case SDK_PAY_FLAG: {
+						@SuppressWarnings("unchecked")
+						PayResult payResult = new PayResult((Map<String, String>) msg.obj);
+						/**
+						 对于支付结果，请商户依赖服务端的异步通知结果。同步通知结果，仅作为支付结束的通知。
+						 */
+						String resultInfo = payResult.getResult();// 同步返回需要验证的信息
+						String resultStatus = payResult.getResultStatus();
+						// 判断resultStatus 为9000则代表支付成功
+						if (TextUtils.equals(resultStatus, "9000")) {
+							// 该笔订单是否真实支付成功，需要依赖服务端的异步通知。
+							Toast.makeText(mActivity, "支付成功", Toast.LENGTH_SHORT).show();
+							if(mOnAliPayListener != null) mOnAliPayListener.onPaySuccess(resultInfo);
 						} else {
-							// 其他值就可以判断为支付失败，包括用户主动取消支付，或者系统返回的错误
-							Toast.makeText(mActivity, "支付失败", Toast.LENGTH_SHORT).show();
-							if(mOnAliPayListener != null) mOnAliPayListener.onPayFailure(resultInfo);
-						}
-					}
-					break;
+							// 该笔订单真实的支付结果，需要依赖服务端的异步通知。
+							// 判断resultStatus 为非“9000”则代表可能支付失败
+							// “8000”代表支付结果因为支付渠道原因或者系统原因还在等待支付结果确认，最终交易是否成功以服务端异步通知为准（小概率状态）
+							if (TextUtils.equals(resultStatus, "8000")) {
+								Toast.makeText(mActivity, "支付结果确认中", Toast.LENGTH_SHORT).show();
+								if(mOnAliPayListener != null) mOnAliPayListener.onPayConfirmimg(resultInfo);
 
-				}
-				case SDK_CHECK_FLAG: {
-					Toast.makeText(mActivity, "检查结果为：" + msg.obj, Toast.LENGTH_SHORT).show();
-					if(mOnAliPayListener != null) mOnAliPayListener.onPayCheck(msg.obj.toString());
-					break;
-				}
-				default:
-					break;
+							} else {
+								// 其他值就可以判断为支付失败，包括用户主动取消支付，或者系统返回的错误
+								Toast.makeText(mActivity, "支付失败", Toast.LENGTH_SHORT).show();
+								if(mOnAliPayListener != null) mOnAliPayListener.onPayFailure(resultInfo);
+							}
+						}
+						break;
+
+					}
+					case SDK_CHECK_FLAG: {
+						Toast.makeText(mActivity, "检查结果为：" + msg.obj, Toast.LENGTH_SHORT).show();
+						if(mOnAliPayListener != null) mOnAliPayListener.onPayCheck(msg.obj.toString());
+						break;
+					}
+					default:
+						break;
 				}
 			}
-			
+
 		};
 	}
 
@@ -111,7 +111,6 @@ public class AliPayReq {
 		this.mConfig = config;
 		send();
 	}
-
 
 	/**
 	 * 发送支付宝支付请求
@@ -157,7 +156,7 @@ public class AliPayReq {
 		Thread payThread = new Thread(payRunnable);
 		payThread.start();
 	}
-	
+
 	public static class Builder{
 		//上下文
 		private Activity activity;
@@ -176,17 +175,17 @@ public class AliPayReq {
 		public Builder() {
 			super();
 		}
-		
+
 		public Builder with(Activity activity){
 			this.activity = activity;
 			return this;
 		}
-		
+
 		public Builder apply(AliPayAPI.Config config){
 			this.config = config;
 			return this;
 		}
-		
+
 		/**
 		 * 设置唯一订单号
 		 * @param outTradeNo
@@ -196,7 +195,7 @@ public class AliPayReq {
 			this.outTradeNo = outTradeNo;
 			return this;
 		}
-		
+
 		/**
 		 * 设置订单标题
 		 * @param subject
@@ -206,7 +205,7 @@ public class AliPayReq {
 			this.subject = subject;
 			return this;
 		}
-		
+
 		/**
 		 * 设置订单内容
 		 * @param body
@@ -216,7 +215,7 @@ public class AliPayReq {
 			this.body = body;
 			return this;
 		}
-		
+
 		/**
 		 * 设置订单价格
 		 * @param price
@@ -226,7 +225,7 @@ public class AliPayReq {
 			this.price = price;
 			return this;
 		}
-		
+
 		/**
 		 * 设置回调
 		 * @param callbackUrl
@@ -236,7 +235,7 @@ public class AliPayReq {
 			this.callbackUrl = callbackUrl;
 			return this;
 		}
-		
+
 		public AliPayReq create(){
 			AliPayReq aliPayReq = new AliPayReq();
 			aliPayReq.mActivity = this.activity;
@@ -246,13 +245,11 @@ public class AliPayReq {
 			aliPayReq.body = this.body;
 			aliPayReq.price = this.price;
 			aliPayReq.callbackUrl = this.callbackUrl;
-			
+
 			return aliPayReq;
 		}
-		
+
 	}
-	
-	
 	//支付宝支付监听
 	private OnAliPayListener mOnAliPayListener;
 	public AliPayReq setOnAliPayListener(OnAliPayListener onAliPayListener) {

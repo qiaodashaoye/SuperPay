@@ -97,46 +97,22 @@ wxapi的文件夹，并在文件夹下建立WXPayEntryActivity类并实现IWXAPI
                 .setBody(orderBody)//设置订单内容 订单详情
                 .setCallbackUrl(callbackUrl)//设置回调地址
                 .create()//
-                .setOnAliPayListener(null);//
+                .setOnAliPayListener(new OnAliPayListener);//支付宝支付的回调，若不需要回调，可直接传null
 
         //3.发送支付宝支付请求
         PayAPI.getInstance().sendPayRequest(aliPayReq);
-
-        //关于支付宝支付的回调
-        //aliPayReq.setOnAliPayListener(new OnAliPayListener);
 
 ```
 
 #### 支付宝支付第二种方式(**强烈推荐**)
 
 ```java
-        //1.创建支付宝支付订单的信息
-        String rawAliOrderInfo = new AliPayReq2.AliOrderInfo()
-                 .setAppid(appid)  // appid
-                 .setIsRsa2(true)  // 是否为RSA2私钥
-                 .setOutTradeNo(outTradeNo) //设置唯一订单号
-                 .setSubject(orderSubject) //设置订单标题
-                 .setBody(orderBody) //设置订单内容
-                 .setPrice(price) //设置订单价格
-                 .setCallbackUrl(callbackUrl) //设置回调链接
-                 .createOrderInfo(); //创建支付宝支付订单信息
-
-
-        //2.签名  支付宝支付订单的信息 ===>>>  商户私钥签名之后的订单信息
-        //TODO 这里需要从服务器获取用商户私钥签名之后的订单信息
-        String signAliOrderInfo = getSignAliOrderInfoFromServer(rawAliOrderInfo);
-
-        //3.发送支付宝支付请求
-        AliPayReq2 aliPayReq = new AliPayReq2.Builder()
-                .with(activity)//Activity实例
-                .setRawAliPayOrderInfo(rawAliOrderInfo)//支付宝支付订单信息
-                .setSignedAliPayOrderInfo(signAliOrderInfo) //设置 商户私钥RSA加密后的支付宝支付订单信息
-                .create()//
-                .setOnAliPayListener(null);//
-        PayAPI.getInstance().sendPayRequest(aliPayReq);
-
-        //关于支付宝支付的回调
-        //aliPayReq.setOnAliPayListener(new OnAliPayListener);
+         AliPayReq2 aliPayReq = new AliPayReq2.Builder()
+                 .with(MainActivity.this)//Activity实例
+                 .setSignedAliPayOrderInfo(info) //后台返回的RSA加密后的支付宝支付订单信息
+                 .create()//
+                 .setOnAliPayListener(new OnAliPayListener);//支付宝支付的回调，若不需要回调，可直接传null
+         PayAPI.getInstance().sendPayRequest(aliPayReq);
 ```
 
 ## 帮助

@@ -5,16 +5,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.widget.Toast;
-
 import com.alipay.sdk.app.PayTask;
-import com.qpg.paylib.alipay.OrderInfoUtil2_0;
 import com.qpg.paylib.alipay.PayResult;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.HashMap;
 import java.util.Map;
-
 
 /**
  * 支付宝支付请求2
@@ -32,8 +25,6 @@ public class AliPayReq2 {
 
 	private Activity mActivity;
 
-	//未签名的订单信息
-	private String rawAliPayOrderInfo;
 	//服务器签名成功的订单信息
 	private String signedAliPayOrderInfo;
 
@@ -46,65 +37,52 @@ public class AliPayReq2 {
 			@Override
 			public void handleMessage(Message msg) {
 				switch (msg.what) {
-				case SDK_PAY_FLAG: {
-					PayResult payResult = new PayResult((Map<String, String>) msg.obj);
+					case SDK_PAY_FLAG: {
+						PayResult payResult = new PayResult((Map<String, String>) msg.obj);
 
-					// 支付宝返回此次支付结果及加签，建议对支付宝签名信息拿签约时支付宝提供的公钥做验签
-					String resultInfo = payResult.getResult();
+						// 支付宝返回此次支付结果及加签，建议对支付宝签名信息拿签约时支付宝提供的公钥做验签
+						String resultInfo = payResult.getResult();
 
-					String resultStatus = payResult.getResultStatus();
+						String resultStatus = payResult.getResultStatus();
 
-					// 判断resultStatus 为“9000”则代表支付成功，具体状态码代表含义可参考接口文档
-					if (TextUtils.equals(resultStatus, "9000")) {
-						Toast.makeText(mActivity, "支付成功", Toast.LENGTH_SHORT).show();
-						if(mOnAliPayListener != null) mOnAliPayListener.onPaySuccess(resultInfo);
-					} else {
-						// 判断resultStatus 为非“9000”则代表可能支付失败
-						// “8000”代表支付结果因为支付渠道原因或者系统原因还在等待支付结果确认，最终交易是否成功以服务端异步通知为准（小概率状态）
-						if (TextUtils.equals(resultStatus, "8000")) {
-							Toast.makeText(mActivity, "支付结果确认中", Toast.LENGTH_SHORT).show();
-							if(mOnAliPayListener != null) mOnAliPayListener.onPayConfirmimg(resultInfo);
-
+						// 判断resultStatus 为“9000”则代表支付成功，具体状态码代表含义可参考接口文档
+						if (TextUtils.equals(resultStatus, "9000")) {
+							Toast.makeText(mActivity, "支付成功", Toast.LENGTH_SHORT).show();
+							if(mOnAliPayListener != null) mOnAliPayListener.onPaySuccess(resultInfo);
 						} else {
-							// 其他值就可以判断为支付失败，包括用户主动取消支付，或者系统返回的错误
-							Toast.makeText(mActivity, "支付失败", Toast.LENGTH_SHORT).show();
-							if(mOnAliPayListener != null) mOnAliPayListener.onPayFailure(resultInfo);
+							// 判断resultStatus 为非“9000”则代表可能支付失败
+							// “8000”代表支付结果因为支付渠道原因或者系统原因还在等待支付结果确认，最终交易是否成功以服务端异步通知为准（小概率状态）
+							if (TextUtils.equals(resultStatus, "8000")) {
+								Toast.makeText(mActivity, "支付结果确认中", Toast.LENGTH_SHORT).show();
+								if(mOnAliPayListener != null) mOnAliPayListener.onPayConfirmimg(resultInfo);
+
+							} else {
+								// 其他值就可以判断为支付失败，包括用户主动取消支付，或者系统返回的错误
+								Toast.makeText(mActivity, "支付失败", Toast.LENGTH_SHORT).show();
+								if(mOnAliPayListener != null) mOnAliPayListener.onPayFailure(resultInfo);
+							}
 						}
+						break;
 					}
-					break;
-				}
-				case SDK_CHECK_FLAG: {
-					Toast.makeText(mActivity, "检查结果为：" + msg.obj, Toast.LENGTH_SHORT).show();
-					if(mOnAliPayListener != null) mOnAliPayListener.onPayCheck(msg.obj.toString());
-					break;
-				}
-				default:
-					break;
+					case SDK_CHECK_FLAG: {
+						Toast.makeText(mActivity, "检查结果为：" + msg.obj, Toast.LENGTH_SHORT).show();
+						if(mOnAliPayListener != null) mOnAliPayListener.onPayCheck(msg.obj.toString());
+						break;
+					}
+					default:
+						break;
 				}
 			}
-			
+
 		};
 	}
-
 
 	/**
 	 * 发送支付宝支付请求
 	 */
 	public void send() {
-		// 创建订单信息
-		String orderInfo = rawAliPayOrderInfo;
-		// 做RSA签名之后的订单信息
-		String sign = signedAliPayOrderInfo;
-		try {
-			// 仅需对sign 做URL编码
-			sign = URLEncoder.encode(sign, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-
 		// 完整的符合支付宝参数规范的订单信息
-		final String payInfo = orderInfo + "&sign=\"" + sign + "\"&"
-				+ getSignType();
+		final String payInfo = signedAliPayOrderInfo;
 
 		Runnable payRunnable = new Runnable() {
 
@@ -113,24 +91,22 @@ public class AliPayReq2 {
 				// 构造PayTask 对象
 				PayTask alipay = new PayTask(mActivity);
 				// 调用支付接口，获取支付结果
-				String result = alipay.pay(payInfo,true);
-
+				Map<String, String> result = alipay.payV2(payInfo,true);
 				Message msg = new Message();
 				msg.what = SDK_PAY_FLAG;
 				msg.obj = result;
 				mHandler.sendMessage(msg);
 			}
 		};
-
 		// 必须异步调用
 		Thread payThread = new Thread(payRunnable);
 		payThread.start();
 	}
 
-	
+
 	/**
 	 * 创建订单信息
-	 * 
+	 *
 	 * @param partner 签约合作者身份ID
 	 * @param seller 签约卖家支付宝账号
 	 * @param outTradeNo 商户网站唯一订单号
@@ -138,7 +114,7 @@ public class AliPayReq2 {
 	 * @param body 商品详情
 	 * @param price 商品金额
 	 * @param callbackUrl 服务器异步通知页面路径
-	 * @return 
+	 * @return
 	 */
 	public static String getOrderInfo(String partner, String seller, String outTradeNo, String subject, String body, String price, String callbackUrl) {
 
@@ -194,43 +170,22 @@ public class AliPayReq2 {
 		return orderInfo;
 	}
 
-	/**
-	 * get the sign type we use. 获取签名方式
-	 * 
-	 */
-	public String getSignType() {
-		return "sign_type=\"RSA\"";
-	}
-	
-	
 	public static class Builder{
 		//上下文
 		private Activity activity;
 
-		//未签名的订单信息
-		private String rawAliPayOrderInfo;
 		//服务器签名成功的订单信息
 		private String signedAliPayOrderInfo;
 
 		public Builder() {
 			super();
 		}
-		
+
 		public Builder with(Activity activity){
 			this.activity = activity;
 			return this;
 		}
 
-
-		/**
-		 * 设置未签名的订单信息
-		 * @param rawAliPayOrderInfo
-		 * @return
-		 */
-		public Builder setRawAliPayOrderInfo(String rawAliPayOrderInfo){
-			this.rawAliPayOrderInfo = rawAliPayOrderInfo;
-			return this;
-		}
 
 		/**
 		 * 设置服务器签名成功的订单信息
@@ -245,114 +200,13 @@ public class AliPayReq2 {
 		public AliPayReq2 create(){
 			AliPayReq2 aliPayReq = new AliPayReq2();
 			aliPayReq.mActivity = this.activity;
-			aliPayReq.rawAliPayOrderInfo = this.rawAliPayOrderInfo;
 			aliPayReq.signedAliPayOrderInfo = this.signedAliPayOrderInfo;
 
 			return aliPayReq;
 		}
-		
+
 	}
 
-
-	/**
-	 * 支付宝支付订单信息的信息类
-	 *
-	 * 官方demo是暴露了商户私钥，pkcs8格式的，这是极其不安全的。官方也建议私钥签名订单这一块放到服务器去处理。
-	 * 所以为了避免商户私钥暴露在客户端，订单的加密过程放到服务器去处理
-	 */
-	public static class AliOrderInfo{
-		boolean isRsa2;
-		String appid;
-		String outTradeNo;
-		String subject;
-		String body;
-		String price;
-		String callbackUrl;
-
-		public AliOrderInfo setAppid(String appid){
-			this.appid = appid;
-			return this;
-		}
-		public AliOrderInfo setIsRsa2(boolean isRsa2){
-			this.isRsa2 = isRsa2;
-			return this;
-		}
-
-		/**
-		 * 设置唯一订单号
-		 * @param outTradeNo
-		 * @return
-		 */
-		public AliOrderInfo setOutTradeNo(String outTradeNo){
-			this.outTradeNo = outTradeNo;
-			return this;
-		}
-
-		/**
-		 * 设置订单标题
-		 * @param subject
-		 * @return
-		 */
-		public AliOrderInfo setSubject(String subject){
-			this.subject = subject;
-			return this;
-		}
-
-		/**
-		 * 设置订单详情
-		 * @param body
-		 * @return
-		 */
-		public AliOrderInfo setBody(String body){
-			this.body = body;
-			return this;
-		}
-
-		/**
-		 * 设置价格
-		 * @param price
-		 * @return
-		 */
-		public AliOrderInfo setPrice(String price){
-			this.price = price;
-			return this;
-		}
-
-		/**
-		 * 设置请求回调
-		 * @param callbackUrl
-		 * @return
-		 */
-		public AliOrderInfo setCallbackUrl(String callbackUrl){
-			this.callbackUrl = callbackUrl;
-			return this;
-		}
-
-		/**
-		 * 创建订单详情
-		 * @return
-		 */
-		public String createOrderInfo(){
-
-			HashMap<String,Object> map=new HashMap<>();
-			map.put("app_id",appid);
-			map.put("notify_url",callbackUrl);
-			map.put("out_trade_no",outTradeNo);
-			map.put("total_amount",price);
-			map.put("body",body);
-			map.put("subject",subject);
-
-			//默认RSA2私钥
-			Map<String, String> params = OrderInfoUtil2_0.buildOrderParamMap(map, isRsa2);
-			// 创建订单信息
-			String orderParam = OrderInfoUtil2_0.buildOrderParam(params);
-			return orderParam;
-		}
-	}
-
-
-	
-	
 	//支付宝支付监听
 	private OnAliPayListener mOnAliPayListener;
 	public AliPayReq2 setOnAliPayListener(OnAliPayListener onAliPayListener) {

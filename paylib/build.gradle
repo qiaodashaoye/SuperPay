@@ -40,16 +40,12 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    api 'com.android.support:appcompat-v7:27.1.1'
     // compile 'org.apache.httpcomponents.client5:httpclient5:5.0-alpha2'
-    compile 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
-    implementation files('libs/httpcore-4.4.6.jar')
-    implementation files('libs/httpclient-4.5.3.jar')
-    implementation files('libs/alipaySdk-20180403.jar')
+    api 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
+    api files('libs/httpcore-4.4.6.jar')
+    api files('libs/httpclient-4.5.3.jar')
+    api files('libs/alipaySdk-20180403.jar')
 }
 
 //需添加如下内容
@@ -63,7 +59,7 @@ group = "com.qpg"
 //发布到JCenter上的项目名字，必须填写
 def libName = "SimplePay"
 // 版本号，下次更新是只需要更改版本号即可
-version = "1.0.0"
+version = "1.0.6"
 /**  上面配置后上传至jcenter后的编译路径是这样的： compile       'com.qpg:SimplePay:1.0.0'  **/
 
 //生成源文件
