@@ -79,7 +79,8 @@ public class WXPayUtils {
             byte[] buf = Util.httpPost(url, entity);
             if (buf != null && buf.length > 0) {
                 try {
-                    Map<String,String> map =doXMLParse(new String(buf));
+                    String content = new String(buf,"utf-8");
+                    Map<String,String> map =doXMLParse(content);
                     asd=map.get("prepay_id");
                     backResult.getInfo(map.get("prepay_id"),signn);
                     return map.get("prepay_id");
@@ -109,7 +110,7 @@ public class WXPayUtils {
         // 回调接口地址
         packageParams.add(new BasicNameValuePair("notify_url",orderInfoMap.get("notify_url").toString()));
         // 我们的订单号
-        packageParams.add(new BasicNameValuePair("out_trade_no",orderInfoMap.get("orderNo").toString()));
+        packageParams.add(new BasicNameValuePair("out_trade_no",nonceStr));
         // 提交用户端ip
         packageParams.add(new BasicNameValuePair("spbill_create_ip",getLocalHostIp()));
         BigDecimal totalFeeBig = new BigDecimal(orderInfoMap.get("orderMoney").toString());

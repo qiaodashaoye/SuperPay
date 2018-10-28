@@ -22,9 +22,11 @@ public class Contant {
 
 
     // APP_ID 替换为你的应用从官方网站申请到的合法appId
-    public static final String APP_ID = "";
+    public static final String APP_ID = "wx25e0412fe7df24ec";
+
     //  API密钥，在商户平台设置
-    public static final String API_KEY = "";
+    public static final  String API_KEY= "27abfd8131cb10c01e3db79f5f88466f";
+
     //商户号 微信分配的公众账号ID
-    public static final String MCH_ID = "";
+    public static final String MCH_ID = "1508103111";
 }
