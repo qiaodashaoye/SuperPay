@@ -5,12 +5,24 @@
 集成微信和支付宝支付，微信支付遇到的坑，我来帮你填，App内嵌支付如此简单。
 # 一、集成步骤
 
-> compile 'com.qpg:paylib:1.0.6'
+> implementation 'com.qpg:paylib:1.0.6'
+
+ ```
+allprojects {
+    repositories {
+        jcenter()
+        google()
+        //支付宝需加入
+        flatDir {
+            dirs 'libs', '../paylib/libs'
+        }
+    }
+
+}
+ ```  
 
 # 二、使用
-### 微信支付使用（两种方案）
-
-##方案一：统一下单接口的调取在服务端（推荐）
+### 微信支付使用
 
 ```java
         //1.创建微信支付请求
@@ -30,41 +42,10 @@
 ```
 >注意：prepayid(预支付码)一定要正确，里面包含订单的金额，。
 
-
-##方案二：统一下单接口的调取在移动端
-
-```java
-     //字段名不能改，改了会报错
-      map.put("wx_appid",PayConstants.APP_ID);
-      map.put("wx_mch_id",PayConstants.MCH_ID);
-      map.put("wx_key",PayConstants.API_KEY);
-      map.put("orderNo","");
-      //   map.put("orderMoney",confirmMoney*100);
-      map.put("orderMoney",1);
-      map.put("notify_url","www.baidu.com");
-      map.put("body","商品描述");
- 
-     new WXPayUtils().init(MainActivity.this,map)
-            .setListener(new WXPayUtils.BackResult() {
-                @Override
-                public void getInfo(String prepayId, String sign) {
-                    WechatPayReq wechatPayReq = new WechatPayReq.Builder()
-                            .with(MainActivity.this) //activity instance
-                            .setAppId(PayConstants.WXPay_APPID) //wechat pay AppID
-                            .setPartnerId(PayConstants.WXPay_mch_id)//wechat pay partner id
-                            .setPrepayId(prepayId)//预订单号
-                            .setNonceStr("")
-                            .setTimeStamp("")//时间戳，可为空
-                            .setSign(sign)//签名
-                            .create();
-                    //2. send the request with wechat pay
-                    PayAPI.getInstance().sendPayRequest(wechatPayReq);
-                }
-            });
-```
 > 关于微信支付完成（失败、成功、取消）后的回调，必须在与包名同级下建立名为
 wxapi的文件夹，并在文件夹下建立WXPayEntryActivity类并实现IWXAPIEventHandler接口，
 所建的类名必须是WXPayEntryActivity，不然不会执行onResp()回调方法。
+
 ### 支付宝支付使用
  > 写在前面：
  ```java
@@ -75,7 +56,7 @@ wxapi的文件夹，并在文件夹下建立WXPayEntryActivity类并实现IWXAPI
   /** 获取 RSA2_PRIVATE，建议使用支付宝提供的公私钥生成工具生成， */
   /** 工具地址：https://doc.open.alipay.com/docs/doc.htm?treeId=291&articleId=106097&docType=1 */
 ```
-                     
+                  
 #### 支付宝支付第一种方式(不建议用这种方式，商户私钥暴露在客户端，极其危险，推荐用第二种支付方式)
 ```java
 

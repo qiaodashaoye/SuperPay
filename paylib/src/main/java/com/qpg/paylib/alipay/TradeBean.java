@@ -1,6 +1,6 @@
 package com.qpg.paylib.alipay;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * @author qpg

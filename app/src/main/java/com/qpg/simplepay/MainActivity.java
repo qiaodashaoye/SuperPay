@@ -1,29 +1,18 @@
 package com.qpg.simplepay;
 
-import android.content.Intent;
-import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-
-import com.qpg.paylib.AliPayAPI;
-import com.qpg.paylib.AliPayReq;
 import com.qpg.paylib.AliPayReq2;
 import com.qpg.paylib.PayAPI;
-import com.qpg.paylib.PayConstants;
-import com.qpg.paylib.WechatPayReq;
-import com.qpg.paylib.wxutils.WXPayUtils;
 import com.qpg.simplepay.temp.BaseModel;
 import com.qpg.simplepay.temp.OrderNoInfo;
 import com.qpg.simplepay.temp.PayOrderInfo;
 import com.qpg.superhttp.SuperHttp;
-import com.qpg.superhttp.callback.LoadingViewCallBack;
 import com.qpg.superhttp.callback.SimpleCallBack;
-
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
@@ -36,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         SuperHttp.init(this.getApplication());
         SuperHttp.config()
                 //配置请求主机地址
-                .setBaseUrl("htt/");
+                .setBaseUrl("http/");
         payAli=(TextView)findViewById(R.id.pay_ali);
         PayWeChat=(TextView)findViewById(R.id.pay_wechat);
         payAli.setOnClickListener(new View.OnClickListener() {
@@ -140,24 +129,6 @@ public class MainActivity extends AppCompatActivity {
                 map.put("orderMoney",1);
                 map.put("notify_url","www.baidu.com");
                 map.put("body","商品描述");
-
-                new WXPayUtils().init(MainActivity.this,map)
-                        .setListener(new WXPayUtils.BackResult() {
-                            @Override
-                            public void getInfo(String prepayId, String sign) {
-                                WechatPayReq wechatPayReq = new WechatPayReq.Builder()
-                                        .with(MainActivity.this) //activity instance
-                                        .setAppId(Contant.APP_ID) //wechat pay AppID
-                                        .setPartnerId(Contant.MCH_ID)//wechat pay partner id
-                                        .setPrepayId(prepayId)//pre pay id
-                                        .setNonceStr("")
-                                        .setTimeStamp("")//time stamp
-                                        .setSign(sign)//sign
-                                        .create();
-                                //2. send the request with wechat pay
-                                PayAPI.getInstance().sendPayRequest(wechatPayReq);
-                            }
-                        });
 
             }
         });
