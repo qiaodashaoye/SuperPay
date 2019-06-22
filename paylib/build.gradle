@@ -6,7 +6,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 28
         versionCode 1
-        versionName "1.0.8"
+        versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -28,8 +28,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
     api 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
-    //  api files('libs/alipaySdk-15.5.9-20181123210601.aar')
-    api(name: 'alipaySdk-15.5.9-20181123210601', ext: 'aar')
+    api(name: 'alipaySdk-15.6.4-20190611174341', ext: 'aar')
 }
 
 apply from: '../bintray.gradle'

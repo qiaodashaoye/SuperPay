@@ -2,12 +2,11 @@
 
 buildscript {
     repositories {
-        maven{url 'http://maven.aliyun.com/nexus/content/groups/public/'}
         jcenter()
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.android.tools.build:gradle:3.4.1'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.4.1'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.4'
 
@@ -18,7 +17,6 @@ buildscript {
 
 allprojects {
     repositories {
-        maven{url 'http://maven.aliyun.com/nexus/content/groups/public/'}
         jcenter()
         google()
 

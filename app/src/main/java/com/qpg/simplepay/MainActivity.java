@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         SuperHttp.init(this.getApplication());
         SuperHttp.config()
                 //配置请求主机地址
-                .setBaseUrl("http/");
+                .setBaseUrl("http://www.baidu.com/");
         payAli=(TextView)findViewById(R.id.pay_ali);
         PayWeChat=(TextView)findViewById(R.id.pay_wechat);
         payAli.setOnClickListener(new View.OnClickListener() {
